@@ -9,14 +9,14 @@ close #
 -->
 
 ## 獲得を目指したスキル
-- スキル1
-- スキル2
-- スキル3
+- [ ] スキル1
+- [ ] スキル2
+- [ ] スキル3
 
 ## Action list
-- Action1
-- Action2
-- Action3
+- [ ] Action1
+- [ ] Action2
+- [ ] Action3
 
 ## 感想
 <!---
