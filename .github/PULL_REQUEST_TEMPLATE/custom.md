@@ -1,10 +1,28 @@
----
-name: Custom issue template
-about: Describe this issue template's purpose here.
-title: ''
-labels: ''
-assignees: ''
+<!---
+  # に続けて issue 番号を記入する
+-->
+close #
 
----
+## 取り組んだトレーニングの概要
+<!---
+  # に続けて issue 番号を記入する
+-->
 
+## 獲得を目指したスキル
+- [ ] スキル1
+- [ ] スキル2
+- [ ] スキル3
 
+## Action list
+- [ ] Action1
+- [ ] Action2
+- [ ] Action3
+
+## 感想
+<!---
+  何でもいいです
+-->
+
+<!---
+  実験結果などを載せるとなお良し
+-->
