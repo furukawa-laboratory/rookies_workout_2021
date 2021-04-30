@@ -24,7 +24,8 @@
 
 import numpy as np
 try:
-    from scipy.spatial.dictance import cdist
+    from scipy.spatial import distance
+    cdist = distance.cdist
 except ModuleNotFoundError:
     print("scipy is not installed, so the custom cdist defined.")
     cdist = lambda XA, XB, metric: np.sum((XA[:, None] - XB[None, :])**2, axis=2)
