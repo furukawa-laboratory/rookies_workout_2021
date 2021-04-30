@@ -23,7 +23,12 @@
 
 
 import numpy as np
-from scipy.spatial import distance as dist
+try:
+    from scipy.spatial.dictance import cdist
+except ModuleNotFoundError:
+    print("scipy is not installed, so the custom cdist defined.")
+    cdist = lambda XA, XB, metric: np.sum((XA[:, None] - XB[None, :])**2, axis=2)
+
 from tqdm import tqdm
 
 import utils
@@ -65,13 +70,13 @@ class SOM(object):
 
 
 def m_step(X, Z, Zeta, sigma):
-    dists = dist.cdist(Zeta, Z, 'sqeuclidean')
+    dists = cdist(Zeta, Z, 'sqeuclidean')
     R = np.exp(-dists / (2 * sigma**2))
     R /= R.sum(axis=1, keepdims=True)
     return R @ X
 
 
 def e_step(X, Y, Zeta):
-    dists = dist.cdist(Y, X, 'sqeuclidean')
+    dists = cdist(Y, X, 'sqeuclidean')
     bmu = np.argmin(dists, axis=0)
     return Zeta[bmu]
