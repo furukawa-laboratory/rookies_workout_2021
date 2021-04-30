@@ -41,15 +41,18 @@ class SOM(object):
                  resolution=10,
                  sigma_max=2.2,
                  sigma_min=0.2,
-                 tau=40):
+                 tau=40,
+                 seed=None):
         self.L = latent_dim
         self.reso = resolution
         self.K = resolution**latent_dim
         self.sigma = lambda t: max(sigma_min,
                                    (sigma_min - sigma_max) * t / tau + sigma_max)
+        self.seed = seed
 
     def fit(self, X, num_epoch=50):
         N, D = X.shape
+        np.random.seed(self.seed)
         Z = np.random.uniform(-1, +1, size=(N, self.L))
         Zeta = utils.make_meshgrid(self.reso, dim=self.L)
 

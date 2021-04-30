@@ -8,6 +8,7 @@ latent_dim = 2
 sigma_max = 2.2
 sigma_min = 0.2
 tau = 40
+seed = 0
 num_epoch = 50
 
 # visualizer

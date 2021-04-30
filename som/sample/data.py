@@ -3,6 +3,7 @@ import numpy as np
 
 def gen_kura_data(params):
     num = params.num_samples
+    np.random.seed(0)
     z1 = np.random.uniform(low=-1, high=+1, size=(num))
     z2 = np.random.uniform(low=-1, high=+1, size=(num))
 

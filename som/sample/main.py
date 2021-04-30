@@ -11,7 +11,8 @@ if __name__ == '__main__':
               latent_dim=params.latent_dim,
               sigma_max=params.sigma_max,
               sigma_min=params.sigma_min,
-              tau=params.tau)
+              tau=params.tau,
+              seed=params.seed)
     history = som.fit(X, num_epoch=params.num_epoch)
 
     visualize_history(X, history, params)
