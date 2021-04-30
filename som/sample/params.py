@@ -4,7 +4,7 @@ num_samples = 200
 
 # model
 resolution = 10
-latent_dim = 1
+latent_dim = 2
 sigma_max = 2.2
 sigma_min = 0.2
 tau = 40
