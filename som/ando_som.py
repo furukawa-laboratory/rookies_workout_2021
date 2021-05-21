@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 N=100
-L=2
+L = 2
+D = 2
 
 def gen_kura_data(num):
     #num = params.num_samples
