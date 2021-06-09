@@ -49,14 +49,17 @@ class UKR(object):
         self.clipping = clipping
         self.kernel = lambda Z1, Z2: np.exp(-cdist(Z1, Z2)**2 / (2 * self.sigma**2))
 
-    def fit(self, X, num_epoch=50, seed=0, f_resolution=10):
+    def fit(self, X, num_epoch=50, seed=0, f_resolution=10, init='random'):
         N, D = X.shape
 
-        width = (max(self.clipping) - min(self.clipping))
-        mid = sum(self.clipping) / 2
-        low, high = mid - self.scale*width, mid + self.scale* width
-        np.random.seed(seed)
-        Z = np.random.uniform(low=low, high=high, size=(N, self.L))
+        if init != 'random':
+            Z = init.copy()
+        else:
+            width = (max(self.clipping) - min(self.clipping))
+            mid = sum(self.clipping) / 2
+            low, high = mid - self.scale*width, mid + self.scale* width
+            np.random.seed(seed)
+            Z = np.random.uniform(low=low, high=high, size=(N, self.L))
         history = dict(
             E=np.zeros((num_epoch,)),
             Y=np.zeros((num_epoch, N, D)),
@@ -75,6 +78,7 @@ class UKR(object):
             history['Y'][epoch] = Y
             history['f'][epoch] = f
             history['Z'][epoch] = Z
+            history['E'][epoch] = np.sum((Y - X)**2) / N
         return history
 
     def estimate_f(self, X, Z1, Z2=None):
@@ -86,23 +90,23 @@ class UKR(object):
     def estimate_e(self, X, Y, Z, R):
         d_ii = Y - X
         d_in = Y[:, np.newaxis, :] - X[np.newaxis, :, :]
-        d_ni = Y[np.newaxis, :, :] - X[:, np.newaxis, :]
-        δ_ni = Z[np.newaxis, :, :] - Z[:, np.newaxis, :]
+        d_ni = - d_in
         δ_in = Z[:, np.newaxis, :] - Z[np.newaxis, :, :]
+        δ_ni = - δ_in
 
-        diff_left = np.einsum("ni,nd,ind,inl->nl",
+        diff_left = np.einsum("ni,nd,nid,nil->nl",
                               R,
                               d_ii,
                               d_ni,
                               δ_ni,
                               optimize=True)
-        diff_right = np.einsum("ni,id,ind,inl->nl",
-                               R.T,
+        diff_right = np.einsum("in,id,ind,inl->nl",
+                               R,
                                d_ii,
                                d_in,
                                δ_in,
                                optimize=True)
-        diff = 2 * (diff_left - diff_right) / X.shape[0]
+        diff = 2 * (diff_left - diff_right) / self.sigma**2 / X.shape[0]
         Z -= self.eta * diff
         Z = np.clip(Z, self.clipping[0], self.clipping[1])
         return Z

@@ -82,6 +82,7 @@ class UnsupervisedKernelRegression(object):
 
 
             if self.is_save_hisotry:
+                self.history['y'][epoch] = Y
                 self.history['z'][epoch] = self.Z
                 self.history['obj_func'][epoch] = obj_func
 
