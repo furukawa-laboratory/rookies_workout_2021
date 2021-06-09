@@ -118,6 +118,6 @@ if __name__ == '__main__':
 
 
     X = data.gen_saddle_shape(num_samples=200, random_seed=0, noise_scale=0.05)
-    ukr = UKR(latent_dim=2, eta=10, sigma=0.1, scale=1e-3, clipping=(-1, 1))
-    history = ukr.fit(X, num_epoch=200)
+    ukr = UKR(latent_dim=2, eta=8, sigma=0.2, scale=1e-3, clipping=(-1, 1))
+    history = ukr.fit(X, num_epoch=300)
     visualize_history(X, history['f'], history['Z'], save_gif=False)
