@@ -79,24 +79,24 @@ class UKR(object):
     def estimate_e(self, X, Y, Z, R):
         d_ii = Y - X
         d_in = Y[:, np.newaxis, :] - X[np.newaxis, :, :]
-        d_ni = Y[np.newaxis, :, :] - X[:, np.newaxis, :]
-        δ_ni = Z[np.newaxis, :, :] - Z[:, np.newaxis, :]
+        d_ni = - d_in
         δ_in = Z[:, np.newaxis, :] - Z[np.newaxis, :, :]
+        δ_ni = - δ_in
 
-        diff_left = np.einsum("ni,nd,ind,inl->nl",
+        diff_left = np.einsum("ni,nd,nid,nil->nl",
                               R,
                               d_ii,
                               d_ni,
                               δ_ni,
                               optimize=True)
-        diff_right = np.einsum("ni,id,ind,inl->nl",
-                               R.T,
+        diff_right = np.einsum("in,id,ind,inl->nl",
+                               R,
                                d_ii,
                                d_in,
                                δ_in,
                                optimize=True)
         diff = 2 * (diff_left - diff_right) / X.shape[0]
-        Z -= self.η * (diff + self.λ * Z / X.shape[0])
+        Z -= self.η * (diff + 2 * self.λ * Z / X.shape[0])
         return Z
 
 
@@ -106,6 +106,6 @@ if __name__ == '__main__':
 
 
     X = gen_saddle_shape(num_samples=200, random_seed=1, noise_scale=0.001)
-    ukr = UKR(latent_dim=2, eta=10, rambda=5e-2, sigma=1, scale=1e-2)
+    ukr = UKR(latent_dim=2, eta=10, rambda=1e-1, sigma=1, scale=1e-2)
     history = ukr.fit(X, num_epoch=200)
     visualize_history(X, history['f'], history['Z'], save_gif=False)
