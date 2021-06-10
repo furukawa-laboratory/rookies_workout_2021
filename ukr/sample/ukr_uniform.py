@@ -106,7 +106,7 @@ class UKR(object):
                                d_in,
                                δ_in,
                                optimize=True)
-        diff = 2 * (diff_left - diff_right) / self.sigma**2 / X.shape[0]
+        diff = 2 * (diff_left - diff_right) / (self.sigma**2 * X.shape[0])
         Z -= self.eta * diff
         Z = np.clip(Z, self.clipping[0], self.clipping[1])
         return Z
@@ -118,6 +118,7 @@ if __name__ == '__main__':
 
 
     X = data.gen_saddle_shape(num_samples=200, random_seed=0, noise_scale=0.05)
+    # X = data.gen_2d_sin_curve(100, random_seed=0, noise_scale=0.01)
     ukr = UKR(latent_dim=2, eta=8, sigma=0.2, scale=1e-3, clipping=(-1, 1))
     history = ukr.fit(X, num_epoch=300)
     visualize_history(X, history['f'], history['Z'], save_gif=False)
