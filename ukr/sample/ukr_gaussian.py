@@ -54,6 +54,7 @@ class UKR(object):
             np.random.seed(seed)
             Z = np.random.normal(scale=self.scale, size=(N, self.L))
         history = dict(
+            E=np.zeros((num_epoch,)),
             Y=np.zeros((num_epoch, N, D)),
             f=np.zeros((num_epoch, f_resolution**self.L, D)),
             Z=np.zeros((num_epoch, N, self.L)))
@@ -70,6 +71,7 @@ class UKR(object):
             history['Y'][epoch] = Y
             history['f'][epoch] = f
             history['Z'][epoch] = Z
+            history['E'][epoch] = np.sum((Y - X)**2) / N
 
         return history
 
