@@ -57,11 +57,11 @@ class UKR(object):
             Z=np.zeros((num_epoch, N, self.L)))
 
         for epoch in tqdm(range(num_epoch)):
-            Y = estimate_f(Z, Z, self.sigma)
+            Y = estimate_f(Z, Z, X, self.sigma)
             Z = estimate_z(X, Z, self.sigma, self.eta, self.clipping)
             Z_new = make_grid(f_resolution, (Z.min(), Z.max()))
             Z_new = jnp.array(Z_new)
-            Y_new = estimate_f(Z_new, Z, self.sigma)
+            Y_new = estimate_f(Z_new, Z, X, self.sigma)
 
             history['E'][epoch] = np.array(obf(X, Z, self.sigma))
             history['Y'][epoch] = np.array(Y)
@@ -70,7 +70,7 @@ class UKR(object):
         return history
 
 
-def estimate_f(Z1, Z2, sigma):
+def estimate_f(Z1, Z2, X, sigma):
     dists = ((Z1[:, np.newaxis, :] - Z2[np.newaxis, :, :])**2).sum(axis=2)
     R = jnp.exp(-0.5 * dists / sigma**2)
     R /= R.sum(axis=1, keepdims=True)
@@ -85,7 +85,7 @@ def estimate_z(X, Z, sigma, eta, clipping):
 
 
 def obf(X, Z, sigma):
-    return jnp.sum((estimate_f(Z, Z, sigma) - X)**2)
+    return jnp.sum((estimate_f(Z, Z, X, sigma) - X)**2)
 
 
 if __name__ == '__main__':
