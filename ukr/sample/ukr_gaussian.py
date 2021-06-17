@@ -71,7 +71,7 @@ class UKR(object):
             history['Y'][epoch] = Y
             history['f'][epoch] = f
             history['Z'][epoch] = Z
-            history['E'][epoch] = np.sum((Y - X)**2) / N
+            history['E'][epoch] = np.sum((Y - X)**2) / N + self.λ * np.sum(Z**2)
 
         return history
 
