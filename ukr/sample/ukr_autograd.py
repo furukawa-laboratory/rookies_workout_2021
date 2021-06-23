@@ -23,11 +23,15 @@
 
 
 import jax.numpy as jnp
+from jax.config import config
 import numpy as np
 from jax import grad
 from tqdm import tqdm
 
 from utils import make_grid
+
+
+config.update("jax_enable_x64", True)
 
 
 class UKR(object):
@@ -63,7 +67,7 @@ class UKR(object):
             Z_new = jnp.array(Z_new)
             Y_new = estimate_f(Z_new, Z, X, self.sigma)
 
-            history['E'][epoch] = np.array(obf(X, Z, self.sigma))
+            history['E'][epoch] = np.sum((Y - X)**2) / N
             history['Y'][epoch] = np.array(Y)
             history['Z'][epoch] = np.array(Z)
             history['f'][epoch] = np.array(Y_new)
@@ -85,7 +89,7 @@ def estimate_z(X, Z, sigma, eta, clipping):
 
 
 def obf(X, Z, sigma):
-    return jnp.sum((estimate_f(Z, Z, X, sigma) - X)**2)
+    return jnp.sum((estimate_f(Z, Z, X, sigma) - X)**2) / X.shape[0]
 
 
 if __name__ == '__main__':
