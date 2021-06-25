@@ -45,12 +45,16 @@ class UKR(object):
         self.scale = scale
         self.kernel = lambda Z1, Z2: np.exp(-cdist(Z1, Z2)**2 / (2 * self.σ**2))
 
-    def fit(self, X, num_epoch=50, seed=0, f_resolution=10):
+    def fit(self, X, num_epoch=50, seed=0, f_resolution=10, init='random'):
         N, D = X.shape
 
-        np.random.seed(seed)
-        Z = np.random.normal(scale=self.scale, size=(N, self.L))
+        if init != 'random':
+            Z = init.copy()
+        else:
+            np.random.seed(seed)
+            Z = np.random.normal(scale=self.scale, size=(N, self.L))
         history = dict(
+            E=np.zeros((num_epoch,)),
             Y=np.zeros((num_epoch, N, D)),
             f=np.zeros((num_epoch, f_resolution**self.L, D)),
             Z=np.zeros((num_epoch, N, self.L)))
@@ -67,6 +71,7 @@ class UKR(object):
             history['Y'][epoch] = Y
             history['f'][epoch] = f
             history['Z'][epoch] = Z
+            history['E'][epoch] = np.sum((Y - X)**2) / N + self.λ * np.sum(Z**2)
 
         return history
 
@@ -95,8 +100,9 @@ class UKR(object):
                                d_in,
                                δ_in,
                                optimize=True)
-        diff = 2 * (diff_left - diff_right) / X.shape[0]
-        Z -= self.η * (diff + 2 * self.λ * Z / X.shape[0])
+        diff = 2 * (diff_left - diff_right) / (self.σ**2 * X.shape[0])
+        diff += 2 * self.λ * Z
+        Z -= self.η * diff
         return Z
 
 
@@ -106,6 +112,6 @@ if __name__ == '__main__':
 
 
     X = gen_saddle_shape(num_samples=200, random_seed=1, noise_scale=0.001)
-    ukr = UKR(latent_dim=2, eta=10, rambda=1e-1, sigma=1, scale=1e-2)
+    ukr = UKR(latent_dim=2, eta=5, rambda=5e-4, sigma=0.2, scale=1e-2)
     history = ukr.fit(X, num_epoch=200)
     visualize_history(X, history['f'], history['Z'], save_gif=False)

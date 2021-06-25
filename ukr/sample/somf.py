@@ -77,8 +77,8 @@ class UnsupervisedKernelRegression(object):
             self.Z += eta * dFdZ
             if self.is_compact:
                 self.Z = np.clip(self.Z,-1.0,1.0)
-            else:
-                self.Z -= self.Z.mean(axis=0)
+            # else:
+            #     self.Z -= self.Z.mean(axis=0)
 
 
             if self.is_save_hisotry:
