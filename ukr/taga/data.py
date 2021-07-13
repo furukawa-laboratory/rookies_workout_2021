@@ -28,6 +28,22 @@ def gen_2d_sin_curve(num_samples, random_seed=None, noise_scale=0.01):
     return X
 
 
+def gen_helix(num_samples, random_seed=None, noise_scale=0.05):
+    np.random.seed(random_seed)
+    z = np.random.uniform(low=-1, high=+1, size=(num_samples,))
+
+    pi = np.pi
+    t = z * pi * 3
+
+    X = np.empty((num_samples,3))
+    X[:, 0] = np.cos(t)
+    X[:, 1] = np.sin(t)
+    X[:, 2] = t
+    X += np.random.normal(loc=0, scale=noise_scale, size=X.shape)
+
+    return X
+
+
 if __name__ == '__main__':
     from matplotlib import pyplot as plt
 

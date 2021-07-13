@@ -95,7 +95,7 @@ class UKR(object):
                                d_in,
                                δ_in,
                                optimize=True)
-        diff = 2 * (diff_left - diff_right) / X.shape[0]
+        diff = 2 * (diff_left - diff_right) / (X.shape[0] * self.σ**2)
         Z -= self.η * (diff + 2 * self.λ * Z / X.shape[0])
         return Z
 
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     from visualizer import visualize_history
 
 
-    X = gen_saddle_shape(num_samples=200, random_seed=1, noise_scale=0.001)
-    ukr = UKR(latent_dim=2, eta=10, rambda=1e-1, sigma=1, scale=1e-2)
-    history = ukr.fit(X, num_epoch=200)
+    X = gen_saddle_shape(num_samples=400, random_seed=1, noise_scale=0.05)
+    ukr = UKR(latent_dim=1, eta=5, rambda=0, sigma=0.1, scale=1e-2)
+    history = ukr.fit(X, num_epoch=100)
     visualize_history(X, history['f'], history['Z'], save_gif=False)
