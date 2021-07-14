@@ -11,16 +11,16 @@ SEED = 0
 if __name__ == '__main__':
 
     N = 100
-    num_epoch = 10
+    num_epoch = 100
     eta = 1
     X = data.gen_saddle_shape(num_samples=N, random_seed=0, noise_scale=0.05)
 
     params_for_gukr = dict(
         latent_dim=2,
-        eta=1,
-        rambda=0,
+        eta=eta,
         sigma=0.1,
-        scale=1e-2
+        scale=1e-3,
+        rambda=0,
     )
 
     #init = init_uniform_Z(params_for_myukr)
@@ -28,9 +28,9 @@ if __name__ == '__main__':
         N=N,
         D=3,
         L=2,
-        eta=1,
+        eta=eta,
         sigma=0.1,
-        scale=1e-2
+        scale=1e-3
     )
 
     ukr_1 = GaussianUKR(**params_for_gukr)
@@ -39,8 +39,8 @@ if __name__ == '__main__':
     history_2 = ukr_2.fit(X, T=num_epoch, f_reso=10, seed=SEED)
 
     # is_E_close = np.allclose(history_1['obj_func'][0], history_2['E'][0])
-    is_Y_close = np.allclose(history_1['Y'][0], history_2['Y'][0])
-    is_Z_close = np.allclose(history_1['Z'][0], history_2['Z'][0])
+    is_Y_close = np.allclose(history_1['Y'], history_2['Y'])
+    is_Z_close = np.allclose(history_1['Z'], history_2['Z'])
     # print("E: ", is_E_close)
     print("Y: ", is_Y_close)
     print("Z: ", is_Z_close)

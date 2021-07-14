@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 from utils import make_grid
 
-seed = 0
+#seed = 0
 #import scipy.spatial.distance as dist
 try:
     from scipy.spatial import distance
@@ -89,6 +88,7 @@ class UKR(object):
 
 if __name__ == '__main__':
     import data
+    seed = 1
     #from visualizer import visualize_history
     N = 400
     D = 3
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     sigma = 0.1
     f_reso = 20
 
-    X = data.gen_saddle_shape(num_samples=400, random_seed=seed, noise_scale=0.05)
+    X = data.gen_saddle_shape(num_samples=400, random_seed=1, noise_scale=0.05)
     ukr = UKR(N, D, L, eta, sigma, scale=1e-2)
     history = ukr.fit(X, T, f_reso = f_reso, seed=seed)
     fig = plt.figure(figsize=(10, 5))
