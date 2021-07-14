@@ -30,7 +30,7 @@ except ModuleNotFoundError:
     print("scipy is not installed, so the custom cdist defined.")
     cdist = lambda XA, XB, metric: np.sum((XA[:, None] - XB[None, :])**2, axis=2)
 
-from tqdm import tqdm
+#from tqdm import tqdm
 
 import utils
 
@@ -63,7 +63,8 @@ class SOM(object):
         }
         history['Zeta'] = Zeta.copy()
 
-        for epoch in tqdm(range(num_epoch)):
+        #for epoch in tqdm(range(num_epoch)):
+        for epoch in range(num_epoch):
             sigma = self.sigma(epoch)
             Y = m_step(X, Z, Zeta, sigma)
             Z = e_step(X, Y, Zeta)
