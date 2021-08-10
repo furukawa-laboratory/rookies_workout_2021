@@ -16,13 +16,15 @@ from tqdm import tqdm
 
 class UKR(object):
     #各変数の準備　インスタンス変数？
-    def __init__(self, N, D, L, eta, sigma, scale):
+    def __init__(self, N, D, L, eta, sigma, rambda, scale,clipping=(-1, +1)):
         self.N = N
         self.D = D
         self.L = L
         self.eta = eta
         self.sigma = sigma
         self.scale = scale
+        self.clipping = clipping
+        self.λ = rambda
     
     #データの距離
     def distance_function(self,Z1,Z2):
@@ -49,6 +51,7 @@ class UKR(object):
         B = A+A.T #N*I
         C = np.einsum("ni,nil->nl",B,delta)
         dE = (2/(self.N*self.sigma**2))*C
+        dE += 2 * self.λ * Z2
         #勾配法による潜在変数の更新
         Z_new = Z1-self.eta*dE
         return Z_new
@@ -60,6 +63,7 @@ class UKR(object):
         Z = np.random.normal(scale=self.scale, size=(self.N, self.L))
 
         history = dict(
+            E=np.zeros((T,)),
             Z = np.zeros((T, self.N, self.L)),
             Y = np.zeros((T, self.N, self.D)),
             f = np.zeros((T,f_reso,f_reso,self.D))
@@ -71,6 +75,7 @@ class UKR(object):
 
             history['Y'][t] = Y
             history['Z'][t] = Z
+            history['E'][t] = np.sum((Y - X)**2) / N + self.λ * np.sum(Z**2)
 
             A = np.linspace(Z.min(),Z.max(),f_reso)
             B = np.linspace(Z.min(),Z.max(),f_reso)
@@ -88,18 +93,18 @@ class UKR(object):
 
 if __name__ == '__main__':
     import data
-    seed = 1
+    seed = 0
     #from visualizer import visualize_history
-    N = 400
+    N = 100
     D = 3
     L = 2
-    T = 100
-    eta = 1
+    T = 200
+    eta = 2.0
     sigma = 0.1
-    f_reso = 20
+    f_reso = 10
 
-    X = data.gen_saddle_shape(num_samples=400, random_seed=1, noise_scale=0.05)
-    ukr = UKR(N, D, L, eta, sigma, scale=1e-2)
+    X = data.gen_saddle_shape(num_samples=N, random_seed=1, noise_scale=0.05)
+    ukr = UKR(N, D, L, eta, sigma, rambda=0, scale=1e-2,clipping=(-1, 1))
     history = ukr.fit(X, T, f_reso = f_reso, seed=seed)
     fig = plt.figure(figsize=(10, 5))
     ax_observable = fig.add_subplot(122, projection='3d')
@@ -117,8 +122,8 @@ if __name__ == '__main__':
 
         ax_latent.scatter(Z[:, 0], Z[:, 1], s=50, edgecolors="k", c=x[:, 0])
     
-        ax_latent.set_xlim(history['Z'][:, :, 0].min(), history['Z'][:, :, 0].max())
-        ax_latent.set_ylim(history['Z'][:, :, 1].min(), history['Z'][:, :, 1].max())
+        ax_latent.set_xlim(-1.1, 1.1)
+        ax_latent.set_ylim(-1.1, 1.1)
 
         ax_observable.scatter(x[:, 0], x[:, 1],x[:, 2], c=x[:, 0], s=50, marker='x')
         ax_observable.plot_wireframe(f[:, :, 0], f[:, :, 1],f[:, :, 2], color='black')
