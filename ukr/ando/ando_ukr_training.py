@@ -5,14 +5,6 @@ from utils import make_grid
 
 #seed = 0
 #import scipy.spatial.distance as dist
-try:
-    from scipy.spatial import distance
-    cdist = distance.cdist
-except ModuleNotFoundError:
-    print("scipy is not installed, so the custom cdist defined.")
-    cdist = lambda XA, XB, metric: np.sum((XA[:, None] - XB[None, :])**2, axis=2)
-from tqdm import tqdm
-
 
 class UKR(object):
     #各変数の準備　インスタンス変数？
@@ -57,7 +49,7 @@ class UKR(object):
         return Z_new
 
 
-
+    #学習用の関数
     def fit(self, X, T, f_reso, seed):
         np.random.seed(seed)
         Z = np.random.normal(scale=self.scale, size=(self.N, self.L))
@@ -111,6 +103,7 @@ if __name__ == '__main__':
     ax_latent = fig.add_subplot(121)
     #%matplotlib nbagg
 
+    #描画の関数
     def update(i, history, x):
         #plt.cla()
         ax_latent.cla()
