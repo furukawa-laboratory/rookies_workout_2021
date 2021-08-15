@@ -1,5 +1,11 @@
 import numpy as np
-import scipy.spatial.distance as dist
+#import scipy.spatial.distance as dist
+try:
+    from scipy.spatial import distance
+    cdist = distance.cdist
+except ModuleNotFoundError:
+    print("scipy is not installed, so the custom cdist defined.")
+    cdist = lambda XA, XB, metric: np.sum((XA[:, None] - XB[None, :])**2, axis=2)
 from tqdm import tqdm
 
 
