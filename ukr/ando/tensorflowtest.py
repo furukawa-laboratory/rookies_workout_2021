@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 tf.keras.backend.set_floatx("float64")
 
-#写像の推定
+#目的関数の値の推定
 def E(Z: tf.Variable, X: np.ndarray) -> tf.Variable:
     Dzz = Z[:, None, :] - Z[None, :, :]
     D = tf.reduce_sum(tf.square(Dzz), axis=2)

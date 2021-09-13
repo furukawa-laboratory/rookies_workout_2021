@@ -96,7 +96,7 @@ if __name__ == '__main__':
     f_reso = 10
 
     X = data.gen_saddle_shape(num_samples=N, random_seed=1, noise_scale=0.05)
-    ukr = UKR(N, D, L, eta, sigma, rambda=2e-3, scale=1e-2,clipping=(-1, 1))
+    ukr = UKR(N, D, L, eta, sigma, rambda=3e-3, scale=1e-2,clipping=(-1, 1))
     history = ukr.fit(X, T, f_reso = f_reso, seed=seed)
     fig = plt.figure(figsize=(10, 5))
     ax_observable = fig.add_subplot(122, projection='3d')
