@@ -23,7 +23,7 @@
 
 
 import numpy as np
-from scipy.spatial import distance as dist
+#from scipy.spatial import distance as dist
 try:
     from scipy.spatial import distance
     cdist = distance.cdist

@@ -32,7 +32,7 @@ if __name__ == '__main__':
     from matplotlib import pyplot as plt
 
 
-    X = gen_saddle_shape(200, random_seed=0, noise_scale=0.05)
+    X = gen_saddle_shape(1000, random_seed=0, noise_scale=0.05)
     # X = gen_2d_sin_curve(100, random_seed=0, noise_scale=0.01)
 
     _, D = X.shape
