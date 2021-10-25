@@ -66,4 +66,32 @@ if __name__ == '__main__':
     #人口データ
     X = dataTUKR.load_kura_tsom(N1, N2, retz=False)
 
+        #描画の関数
+    def update(i, history, x):
+        #plt.cla()
+        ax_latent.cla()
+        ax_observable.cla()
+
+        fig.suptitle(f"epoch: {i}")
+        Z = history['Z'][i]
+        f = history['f'][i]
+
+        ax_latent.scatter(Z[:, 0], Z[:, 1], s=50, edgecolors="k", c=x[:, 0])
+    
+        ax_latent.set_xlim(-1.1, 1.1)
+        ax_latent.set_ylim(-1.1, 1.1)
+
+        ax_observable.scatter(x[:, 0], x[:, 1],x[:, 2], c=x[:, 0], s=50, marker='x')
+        ax_observable.plot_wireframe(f[:, :, 0], f[:, :, 1],f[:, :, 2], color='black')
+    
+
+        ax_observable.set_xlim(x[:, 0].min(), x[:, 0].max())
+        ax_observable.set_ylim(x[:, 1].min(), x[:, 1].max())
+
+    ani = animation.FuncAnimation(fig, update, fargs=(history, X), interval=50, frames=T)
+    ani.save("change_ver1.gif", writer = "pillow")
+    plt.show()
+    #HTML(ani.to_jshtml())
+    
+
 
